@@ -14,18 +14,51 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+
+    <meta name="google-signin-client_id"
+          content="247706694091-ebdbmmnrnatein1uoq00r42lajp4l8sd.apps.googleusercontent.com">
+
 </head>
 <body>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sign in with google</h5>
+            </div>
+            <div class="modal-body">
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
 <div class="container" id="requestedEvents">
 
 </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script>
 
+<script>
+    var userEmail = null;
     $(document).ready(function () {
         var socket = io();
+
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#myModal').modal('show');
+        var signIn = false;
+        onSignIn = function (googleUser) {
+            var profile = googleUser.getBasicProfile();
+            userEmail = profile.getEmail();
+            signIn = true;
+            $('#myModal').modal('hide');
+            socket.emit('requestData', userEmail);
+        };
         socket.on('newEventRequests', function (events) {
             $("#requestedEvents").empty();
             $("#requestedEvents").append("<div class='row' id='row0'></div>")
@@ -60,13 +93,12 @@
                     col = 0;
                     $("#requestedEvents").append("<div class='row' id='row" + row + "'></div>");
                 }
-                approve = function(id){
+                approve = function (id) {
                     var approvedEvent = events[id];
                     socket.emit('approve', approvedEvent);
                 };
-                reject = function(id) {
+                reject = function (id) {
                     var rejectedEvent = events[id];
-                    console.log('reject');
                     socket.emit('reject', rejectedEvent);
                 };
             }
