@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="container" id="requestedEvents">
+
+</div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var socket = io();
+        socket.on('newEventRequests', function (events) {
+            $("#requestedEvents").empty();
+            $("#requestedEvents").append("<div class='row' id='row0'></div>")
+            var col = 0;
+            var row = 0;
+            for (var i = 0; i < events.length; i++) {
+                var event = events[i];
+                $("#row" + row + "").append("" +
+                    "<div class=\"card col-sm\">\n" +
+                    "  <img class=\"card-img-top\" src=\"" + event.image + "\" alt=\"Card image cap\">\n" +
+                    "  <div class=\"card-body\">\n" +
+                    "    <h5 class=\"card-title\">" + event.name + "</h5>\n" +
+                    "  </div>\n" +
+                    "  <ul class=\"list-group list-group-flush\">\n" +
+                    "    <li class=\"list-group-item\">Venue: " + event.venueName + "</li>\n" +
+                    "    <li class=\"list-group-item\">Venue lat long: " + event.venueLat + ", " + event.venueLong + "</li>\n" +
+                    "    <li class=\"list-group-item\">Date: " + event.date + "</li>\n" +
+                    "    <li class=\"list-group-item\">Time: " + event.time + "</li>\n" +
+                    "    <li class=\"list-group-item\">Min Age: " + event.minAge + "</li>\n" +
+                    "    <li class=\"list-group-item\">Price: " + event.price + "</li>\n" +
+                    "    <li class=\"list-group-item\">Description: " + event.description + "</li>\n" +
+                    "  </ul>\n" +
+                    "  <div class=\"card-body\">\n" +
+                    "    <btn class=\"btn btn-success approveBtn\" onclick='approve(\"" + i + "\")'>Approve</btn>\n" +
+                    "    <btn class=\"btn btn-danger rejectBtn\"  onclick='reject(\"" + i + "\")'>Reject</btn>\n" +
+                    "  </div>\n" +
+                    "</div>"
+                );
+                col++;
+                if (col === 3) {
+                    row++;
+                    col = 0;
+                    $("#requestedEvents").append("<div class='row' id='row" + row + "'></div>");
+                }
+                approve = function(id){
+                    var approvedEvent = events[id];
+                    socket.emit('approve', approvedEvent);
+                };
+                reject = function(id) {
+                    var rejectedEvent = events[id];
+                    console.log('reject');
+                    socket.emit('reject', rejectedEvent);
+                };
+            }
+        });
+        socket.on("success", function () {
+            location.reload();
+        });
+
+
+    });
+</script>
+
+</html>
