@@ -208,7 +208,8 @@ io.on('connection', function(socket){
 
 });
 
+const PORT = process.env.PORT || 80;
 
-http.listen(80, function(){
+http.listen(PORT, function(){
     console.log('listening on *:80');
 });
