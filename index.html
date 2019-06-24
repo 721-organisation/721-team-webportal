@@ -141,12 +141,12 @@
         socket.on('newEventRequests', function (events) {
             setCookie("email", userEmail, 2);
             $("#requestedHiddenGems").empty();
-            $("#requestedHiddenGems").append("<div class='row' id='row0'></div>")
+            $("#requestedHiddenGems").append("<div class='row' id='hgrow0'></div>")
             var col = 0;
             var row = 0;
             for (var i = 0; i < events.length; i++) {
                 var event = events[i];
-                $("#row" + row + "").append("" +
+                $("#hgrow" + row + "").append("" +
                     "<div class=\"card col-sm\">\n" +
                     "  <img class=\"card-img-top\" src=\"" + event.image + "\" alt=\"Card image cap\">\n" +
                     "  <div class=\"card-body\">\n" +
@@ -169,7 +169,7 @@
                 if (col === 3) {
                     row++;
                     col = 0;
-                    $("#requestedHiddenGems").append("<div class='row' id='row" + row + "'></div>");
+                    $("#requestedHiddenGems").append("<div class='row' id='hgrow" + row + "'></div>");
                 }
                 approve = function (id) {
                     var approvedEvent = events[id];
