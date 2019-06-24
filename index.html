@@ -125,7 +125,7 @@
                 if (col === 3) {
                     row++;
                     col = 0;
-                    $("#requestedEvents").append("<div class='row' id='row" + row + "'></div>");
+                    $("#requestedHiddenGems").append("<div class='row' id='row" + row + "'></div>");
                 }
                 approve = function (id) {
                     var approvedEvent = events[id];
@@ -169,7 +169,7 @@
                 if (col === 3) {
                     row++;
                     col = 0;
-                    $("#requestedHiddenGems").append("<div class='row' id='hgrow" + row + "'></div>");
+                    $("#requestedEvents").append("<div class='row' id='hgrow" + row + "'></div>");
                 }
                 approve = function (id) {
                     var approvedEvent = events[id];

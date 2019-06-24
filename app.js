@@ -10,6 +10,7 @@ app.get('/emails.txt', function (req, res) {
     res.sendFile(__dirname + '/emails.txt');
 })
 app.get('/', function(req, res){
+    console.log("RESPONDING");
     res.sendFile(__dirname + '/index.html');
 });
 var accessToken = "";
@@ -207,9 +208,9 @@ io.on('connection', function(socket){
     });
 
 });
-
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 
 http.listen(PORT, function(){
-    console.log('listening on *:80');
+    console.log('listening on *:' + PORT);
 });
+// Start the server
