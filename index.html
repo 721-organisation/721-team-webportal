@@ -92,7 +92,7 @@
             socket.emit('requestData', userEmail);
         }
 
-        socket.on('newHiddenGemRequests', function (events) {
+        socket.on('newEventRequests', function (events) {
             setCookie("email", userEmail, 2);
             $("#requestedEvents").empty();
             $("#requestedEvents").append("<div class='row' id='row0'></div>")
@@ -125,7 +125,7 @@
                 if (col === 3) {
                     row++;
                     col = 0;
-                    $("#requestedHiddenGems").append("<div class='row' id='row" + row + "'></div>");
+                    $("#requestedEvents").append("<div class='row' id='row" + row + "'></div>");
                 }
                 approve = function (id) {
                     var approvedEvent = events[id];
@@ -138,7 +138,7 @@
             }
         });
 
-        socket.on('newEventRequests', function (events) {
+        socket.on('newHiddenGemRequests', function (events) {
             setCookie("email", userEmail, 2);
             $("#requestedHiddenGems").empty();
             $("#requestedHiddenGems").append("<div class='row' id='hgrow0'></div>")
@@ -169,7 +169,7 @@
                 if (col === 3) {
                     row++;
                     col = 0;
-                    $("#requestedEvents").append("<div class='row' id='hgrow" + row + "'></div>");
+                    $("#requestedHiddenGems").append("<div class='row' id='hgrow" + row + "'></div>");
                 }
                 approve = function (id) {
                     var approvedEvent = events[id];
