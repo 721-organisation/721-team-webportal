@@ -35,8 +35,15 @@
         </div>
     </div>
 </div>
+<div class="container">
+    <h1>Requested Events</h1>
+</div>
 <div class="container" id="requestedEvents">
-
+</div>
+<div class="container">
+    <h1>Requested Hidden Gems</h1>
+</div>
+<div class="container" id="requestedHiddenGems">
 </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
@@ -85,7 +92,7 @@
             socket.emit('requestData', userEmail);
         }
 
-        socket.on('newEventRequests', function (events) {
+        socket.on('newHiddenGemRequests', function (events) {
             setCookie("email", userEmail, 2);
             $("#requestedEvents").empty();
             $("#requestedEvents").append("<div class='row' id='row0'></div>")
@@ -122,6 +129,50 @@
                 }
                 approve = function (id) {
                     var approvedEvent = events[id];
+                    socket.emit('approveHG', approvedEvent);
+                };
+                reject = function (id) {
+                    var rejectedEvent = events[id];
+                    socket.emit('rejectHG', rejectedEvent);
+                };
+            }
+        });
+
+        socket.on('newEventRequests', function (events) {
+            setCookie("email", userEmail, 2);
+            $("#requestedHiddenGems").empty();
+            $("#requestedHiddenGems").append("<div class='row' id='row0'></div>")
+            var col = 0;
+            var row = 0;
+            for (var i = 0; i < events.length; i++) {
+                var event = events[i];
+                $("#row" + row + "").append("" +
+                    "<div class=\"card col-sm\">\n" +
+                    "  <img class=\"card-img-top\" src=\"" + event.image + "\" alt=\"Card image cap\">\n" +
+                    "  <div class=\"card-body\">\n" +
+                    "    <h5 class=\"card-title\">" + event.name + "</h5>\n" +
+                    "  </div>\n" +
+                    "  <ul class=\"list-group list-group-flush\">\n" +
+                    "    <li class=\"list-group-item\">Venue: " + event.venueName + "</li>\n" +
+                    "    <li class=\"list-group-item\">Venue lat long: " + event.venueLat + ", " + event.venueLong + "</li>\n" +
+                    "    <li class=\"list-group-item\">Min Age: " + event.minAge + "</li>\n" +
+                    "    <li class=\"list-group-item\">Price: " + event.price + "</li>\n" +
+                    "    <li class=\"list-group-item\">Description: " + event.description + "</li>\n" +
+                    "  </ul>\n" +
+                    "  <div class=\"card-body\">\n" +
+                    "    <btn class=\"btn btn-success approveBtn\" onclick='approve(\"" + i + "\")'>Approve</btn>\n" +
+                    "    <btn class=\"btn btn-danger rejectBtn\"  onclick='reject(\"" + i + "\")'>Reject</btn>\n" +
+                    "  </div>\n" +
+                    "</div>"
+                );
+                col++;
+                if (col === 3) {
+                    row++;
+                    col = 0;
+                    $("#requestedHiddenGems").append("<div class='row' id='row" + row + "'></div>");
+                }
+                approve = function (id) {
+                    var approvedEvent = events[id];
                     socket.emit('approve', approvedEvent);
                 };
                 reject = function (id) {
@@ -130,6 +181,7 @@
                 };
             }
         });
+
         socket.on("success", function () {
             location.reload();
         });

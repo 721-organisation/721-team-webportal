@@ -58,6 +58,25 @@ io.on('connection', function(socket){
                         if (error) throw new Error(error);
 
                         io.emit("newEventRequests", JSON.parse(body));
+                        var options = { method: 'GET',
+                            url: 'https://temp-243314.appspot.com/api/requestedHiddenGems',
+                            qs: { access_token: accessToken },
+                            headers:
+                                { 'cache-control': 'no-cache',
+                                    Connection: 'keep-alive',
+                                    'accept-encoding': 'gzip, deflate',
+                                    Host: 'temp-243314.appspot.com',
+                                    'Cache-Control': 'no-cache',
+                                    Accept: '*/*',
+                                    'Content-Type': 'application/json' },
+                            gzip: true
+                        };
+
+                        request(options, function (error, response, body) {
+                            if (error) throw new Error(error);
+
+                            io.emit("newHiddenGemRequests", JSON.parse(body));
+                        });
                     });
                 });
             }
@@ -102,9 +121,6 @@ io.on('connection', function(socket){
             });
         });
 
-
-
-
     });
     socket.on('reject', function (event) {
         var request = require("request");
@@ -127,6 +143,69 @@ io.on('connection', function(socket){
 
         });
     });
+
+
+
+    socket.on('approveHG', function (event) {
+        var request = require("request");
+
+        var options = { method: 'DELETE',
+            url: 'https://temp-243314.appspot.com/api/requestedHiddenGems/'+event.id,
+            qs: { access_token: accessToken },
+            headers:
+                { 'cache-control': 'no-cache',
+                    Connection: 'keep-alive',
+                    'accept-encoding': 'gzip, deflate',
+                    Host: 'temp-243314.appspot.com',
+                    'Cache-Control': 'no-cache',
+                    Accept: '*/*',
+                    'Content-Type': 'application/json' } };
+
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            event.id = null;
+            var settings = { method: 'POST',
+                url: 'https://temp-243314.appspot.com/api/hiddenGems',
+                qs: { access_token: accessToken },
+                headers:
+                    { 'cache-control': 'no-cache',
+                        Connection: 'keep-alive',
+                        'accept-encoding': 'gzip, deflate',
+                        Accept: '*/*',
+                        'Content-Type': 'application/json' },
+                body: event,
+                json: true };
+
+            request(settings, function (error, response, b)  {
+                if (error) throw new Error(error);
+                io.emit("success");
+
+            });
+        });
+
+    });
+    socket.on('rejectHG', function (event) {
+        var request = require("request");
+
+        var options = { method: 'DELETE',
+            url: 'https://temp-243314.appspot.com/api/requestedHiddenGems/'+event.id,
+            qs: { access_token: accessToken },
+            headers:
+                { 'cache-control': 'no-cache',
+                    Connection: 'keep-alive',
+                    'accept-encoding': 'gzip, deflate',
+                    Host: 'temp-243314.appspot.com',
+                    'Cache-Control': 'no-cache',
+                    Accept: '*/*',
+                    'Content-Type': 'application/json' } };
+
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            io.emit("success");
+
+        });
+    });
+
 });
 
 
