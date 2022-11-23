@@ -13,7 +13,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "request": "^2.88.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.5.0"
   },
   "license": "UNLICENSED",
   "description": "721-webserver"
